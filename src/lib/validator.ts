@@ -86,3 +86,70 @@ export const PasswordResetSchema = z
     message: '비밀번호가 일치하지 않습니다.',
     path: ['confirmPassword'],
   })
+
+// 글 쓰기
+export const PostInputSchema = z.object({
+  title: z
+    .string()
+    .min(1, { message: '→ 제목을 입력해주세요.' })
+    .max(200, { message: '→ 제목은 최대 200자까지 가능합니다.' }),
+  slug: z
+    .string()
+    .min(1, { message: '→ 슬러그를 입력해주세요.' })
+    .max(200, { message: '→ 슬러그는 최대 200자까지 가능합니다.' }),
+  category: z.string().min(1, { message: '카테고리를 선택해주세요.' }),
+  description: z
+    .string()
+    .max(500, { message: '→ 설명은 최대 500자까지 가능합니다.' })
+    .optional(),
+  isPublished: z.boolean(),
+  storeId: z.string().optional(),
+  numViews: z.coerce.number().min(0),
+  numLikes: z.coerce.number().min(0),
+})
+
+// 글 업데이트용
+export const PostUpdateSchema = PostInputSchema.partial().extend({
+  id: z.string().min(1, { message: '→ 게시글 ID가 필요합니다.' }),
+})
+
+// 스토어 생성
+export const StoreInputSchema = z.object({
+  storeId: z
+    .string()
+    .min(1, { message: '→ 스토어 ID를 입력해주세요.' })
+    .max(50, { message: '→ 스토어 ID는 최대 50자까지 가능합니다.' }),
+  name: z
+    .string()
+    .min(1, { message: '→ 매장명을 입력해주세요.' })
+    .max(100, { message: '→ 매장명은 최대 100자까지 가능합니다.' }),
+  address: z
+    .string()
+    .min(1, { message: '→ 주소를 입력해주세요.' })
+    .max(200, { message: '→ 주소는 최대 200자까지 가능합니다.' }),
+  location: z
+    .string()
+    .min(1, { message: '→ 지역을 입력해주세요.' })
+    .max(50, { message: '→ 지역은 최대 50자까지 가능합니다.' }),
+  latitude: z.string().min(1, { message: '→ 위도를 입력해주세요.' }),
+  longitude: z.string().min(1, { message: '→ 경도를 입력해주세요.' }),
+  parking: z
+    .string()
+    .min(1, { message: '→ 주차 정보를 입력해주세요.' })
+    .max(300, { message: '→ 주차 정보는 최대 300자까지 가능합니다.' }),
+  since: z
+    .string()
+    .min(1, { message: '→ 오픈일을 입력해주세요.' })
+    .max(20, { message: '→ 오픈일은 최대 20자까지 가능합니다.' }),
+  phone: z
+    .string()
+    .min(1, { message: '→ 전화번호를 입력해주세요.' })
+    .max(20, { message: '→ 전화번호는 최대 20자까지 가능합니다.' }),
+  tags: z.array(z.string()).optional(),
+  images: z.array(z.string()).optional(),
+})
+
+// 스토어 업데이트용
+export const StoreUpdateSchema = StoreInputSchema.partial().extend({
+  id: z.string().min(1, { message: '→ 스토어 ID가 필요합니다.' }),
+})

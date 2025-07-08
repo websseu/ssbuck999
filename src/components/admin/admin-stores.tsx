@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import { getAllPostsPage } from '@/lib/actions/post.action'
+import { getAllStoresPage, deleteStore } from '@/lib/actions/store.action'
 import {
   Loader2,
   Search,
@@ -11,6 +11,7 @@ import {
   ChevronsRight,
   Eye,
   Trash2,
+  MapPin,
   Pencil,
 } from 'lucide-react'
 import {
@@ -36,24 +37,25 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '../ui/badge'
-import { formatDateTime } from '@/lib/utils'
-import DialogPostDetail from '../dialog/dialog-post-detail'
-import DialogPostDelete from '../dialog/dialog-post-delete'
-import DialogPostAdd from '../dialog/dialog-post-add'
-import DialogPostEdit from '../dialog/dialog-post-edit'
-import { deletePost } from '@/lib/actions/post.action'
+import DialogStoreDetail from '../dialog/dialog-store-detail'
+import DialogStoreDelete from '../dialog/dialog-store-delete'
+import DialogStoreAdd from '../dialog/dialog-store-add'
+import DialogStoreEdit from '../dialog/dialog-store-edit'
 import { toast } from 'sonner'
 
-interface Post {
+interface Store {
   _id: string
-  title: string
-  slug: string
-  category: string
-  description?: string
-  isPublished: boolean
-  storeId?: string
-  numViews: number
-  numLikes: number
+  storeId: string
+  name: string
+  address: string
+  location: string
+  latitude: string
+  longitude: string
+  parking: string
+  since: string
+  phone: string
+  tags: string[]
+  images: string[]
   createdAt: string
   updatedAt: string
 }
@@ -67,8 +69,8 @@ interface PaginationInfo {
   hasPrevPage: boolean
 }
 
-export default function AdminPosts() {
-  const [posts, setPosts] = useState<Post[]>([])
+export default function AdminStores() {
+  const [stores, setStores] = useState<Store[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -79,29 +81,29 @@ export default function AdminPosts() {
   const [pagination, setPagination] = useState<PaginationInfo | null>(null)
 
   const [detailDialogOpen, setDetailDialogOpen] = useState(false)
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null)
+  const [selectedStore, setSelectedStore] = useState<Store | null>(null)
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [postToDelete, setPostToDelete] = useState<Post | null>(null)
+  const [storeToDelete, setStoreToDelete] = useState<Store | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
 
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [postToEdit, setPostToEdit] = useState<Post | null>(null)
+  const [storeToEdit, setStoreToEdit] = useState<Store | null>(null)
 
   // 데이터 가져오기
-  const fetchPosts = useCallback(async () => {
+  const fetchStores = useCallback(async () => {
     try {
       setIsLoading(true)
 
-      const result = await getAllPostsPage(
+      const result = await getAllStoresPage(
         currentPage,
         pageSize,
         debouncedSearchTerm || undefined
       )
 
       if (result.success) {
-        setPosts(result.posts)
+        setStores(result.stores)
         setPagination(result.pagination!)
         setError(null)
       } else {
@@ -109,15 +111,15 @@ export default function AdminPosts() {
       }
     } catch (err) {
       setError('데이터를 불러오는 중 오류가 발생했습니다.')
-      console.error('글목록 데이터 로딩 오류:', err)
+      console.error('매장목록 데이터 로딩 오류:', err)
     } finally {
       setIsLoading(false)
     }
   }, [currentPage, pageSize, debouncedSearchTerm])
 
   useEffect(() => {
-    fetchPosts()
-  }, [fetchPosts])
+    fetchStores()
+  }, [fetchStores])
 
   // 페이지 크기 변경
   const handlePageSizeChange = (newPageSize: string) => {
@@ -159,22 +161,22 @@ export default function AdminPosts() {
   }
 
   const handleDeleteConfirm = async () => {
-    if (!postToDelete) return
+    if (!storeToDelete) return
     setIsDeleting(true)
     try {
-      const result = await deletePost(postToDelete._id)
+      const result = await deleteStore(storeToDelete.storeId)
       if (result.success) {
-        toast.success('글 삭제가 완료되었습니다.')
-        setPosts((prev) => prev.filter((p) => p._id !== postToDelete._id))
+        toast.success('매장 삭제가 완료되었습니다.')
+        setStores((prev) => prev.filter((s) => s._id !== storeToDelete._id))
         setDeleteDialogOpen(false)
-        setPostToDelete(null)
+        setStoreToDelete(null)
       } else {
-        toast.error('글 삭제 중 오류가 발생했습니다.', {
+        toast.error('매장 삭제 중 오류가 발생했습니다.', {
           description: result.error,
         })
       }
     } catch {
-      toast.error('글 삭제 중 오류가 발생했습니다.', {
+      toast.error('매장 삭제 중 오류가 발생했습니다.', {
         description: '오류가 발생했습니다.',
       })
     } finally {
@@ -186,13 +188,12 @@ export default function AdminPosts() {
     <Card>
       <CardHeader>
         <CardTitle className='text-xl font-gmarket text-green-700 flex items-center gap-2'>
-          글 관리({pagination?.totalCount || 0})
+          매장 관리({pagination?.totalCount || 0})
         </CardTitle>
         <CardDescription>
-          회원을 관리하고 삭제 및 상태 변경을 할 수 있습니다.
+          스타벅스 매장을 관리하고 삭제할 수 있습니다.
         </CardDescription>
       </CardHeader>
-
       <CardContent>
         <div className='space-y-4'>
           <div className='flex gap-3 flex-row justify-between items-end'>
@@ -200,7 +201,7 @@ export default function AdminPosts() {
             <div className='relative w-full sm:w-80 flex gap-2'>
               <Search className='absolute left-3 top-2.5 h-4 w-4 text-muted-foreground' />
               <Input
-                placeholder='타이틀, 카테고리, 스토어ID, 태그'
+                placeholder='매장명, 주소, 지역, 스토어ID, 태그'
                 className='pl-9 h-9'
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -229,12 +230,12 @@ export default function AdminPosts() {
                 </SelectContent>
               </Select>
 
-              {/* 글 추가하기 버튼 */}
+              {/* 스토어 추가하기 버튼 */}
               <Button
                 onClick={() => setAddDialogOpen(true)}
                 className='bg-green-700 hover:bg-green-800 h-9'
               >
-                글 추가하기
+                스토어 추가하기
               </Button>
             </div>
           </div>
@@ -247,7 +248,7 @@ export default function AdminPosts() {
           ) : error ? (
             <div className='bg-destructive/10 p-4 rounded-md text-destructive text-center'>
               <p className='font-medium'>{error}</p>
-              <Button onClick={fetchPosts} variant='outline' className='mt-2'>
+              <Button onClick={fetchStores} variant='outline' className='mt-2'>
                 다시 시도
               </Button>
             </div>
@@ -258,58 +259,60 @@ export default function AdminPosts() {
                   <TableHeader>
                     <TableRow>
                       <TableHead className='text-center'>번호</TableHead>
-                      <TableHead>제목</TableHead>
-                      <TableHead>슬러그</TableHead>
-                      <TableHead className='text-center'>카테고리</TableHead>
+                      <TableHead>매장명</TableHead>
+                      <TableHead>지역</TableHead>
+                      <TableHead>주소</TableHead>
                       <TableHead className='text-center'>스토어ID</TableHead>
-                      <TableHead className='text-center'>공개여부</TableHead>
-                      <TableHead className='text-center'>조회수</TableHead>
-                      <TableHead className='text-center'>좋아요</TableHead>
-                      <TableHead className='text-center'>생성일</TableHead>
+                      <TableHead>태그</TableHead>
+                      <TableHead className='text-center'>오픈일</TableHead>
                       <TableHead className='text-center'>관리</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {posts.length > 0 ? (
-                      posts.map((post, index) => {
+                    {stores.length > 0 ? (
+                      stores.map((store, index) => {
                         return (
                           <TableRow
-                            key={post._id}
+                            key={store._id}
                             className='text-muted-foreground'
                           >
                             <TableCell className='text-center'>
                               {(currentPage - 1) * pageSize + index + 1}
                             </TableCell>
-                            <TableCell>{post.title}</TableCell>
-                            <TableCell>{post.slug}</TableCell>
-                            <TableCell className='text-center'>
-                              {post.category}
+                            <TableCell className='font-medium'>
+                              {store.name}
                             </TableCell>
 
+                            <TableCell>
+                              <div className='flex items-center gap-1'>
+                                <MapPin className='h-3 w-3' />
+                                {store.location}
+                              </div>
+                            </TableCell>
+                            <TableCell className='max-w-xs truncate'>
+                              {store.address}
+                            </TableCell>
                             <TableCell className='text-center'>
                               <Badge variant='outline' className='text-xs'>
-                                {post.storeId}
+                                {store.storeId}
                               </Badge>
                             </TableCell>
-                            <TableCell className='text-center'>
-                              <Badge
-                                variant={
-                                  post.isPublished ? 'outline' : 'destructive'
-                                }
-                                className='cursor-pointer'
-                              >
-                                {post.isPublished ? '공개' : '비공개'}
-                              </Badge>
+                            <TableCell>
+                              <div className='flex gap-1 overflow-hidden'>
+                                {store.tags.map((tag, tagIndex) => (
+                                  <Badge
+                                    key={tagIndex}
+                                    variant='outline'
+                                    className='text-xs flex-shrink-0'
+                                  >
+                                    {tag}
+                                  </Badge>
+                                ))}
+                              </div>
                             </TableCell>
                             <TableCell className='text-center'>
-                              {post.numViews}
-                            </TableCell>
-                            <TableCell className='text-center'>
-                              {post.numLikes}
-                            </TableCell>
-                            <TableCell className='text-center'>
-                              <Badge variant='outline'>
-                                {formatDateTime(post.createdAt)}
+                              <Badge variant='secondary' className='text-xs'>
+                                {store.since}
                               </Badge>
                             </TableCell>
                             <TableCell className='text-center'>
@@ -319,7 +322,7 @@ export default function AdminPosts() {
                                   size='sm'
                                   title='상세정보'
                                   onClick={() => {
-                                    setSelectedPost(post)
+                                    setSelectedStore(store)
                                     setDetailDialogOpen(true)
                                   }}
                                 >
@@ -330,7 +333,7 @@ export default function AdminPosts() {
                                   size='sm'
                                   title='수정하기'
                                   onClick={() => {
-                                    setPostToEdit(post)
+                                    setStoreToEdit(store)
                                     setEditDialogOpen(true)
                                   }}
                                 >
@@ -341,7 +344,7 @@ export default function AdminPosts() {
                                   size='sm'
                                   title='삭제하기'
                                   onClick={() => {
-                                    setPostToDelete(post)
+                                    setStoreToDelete(store)
                                     setDeleteDialogOpen(true)
                                   }}
                                 >
@@ -355,10 +358,10 @@ export default function AdminPosts() {
                     ) : (
                       <TableRow>
                         <TableCell
-                          colSpan={9}
+                          colSpan={10}
                           className='text-center py-6 text-muted-foreground'
                         >
-                          등록된 문의사항이 없습니다.
+                          등록된 매장이 없습니다.
                         </TableCell>
                       </TableRow>
                     )}
@@ -423,35 +426,35 @@ export default function AdminPosts() {
         </div>
       </CardContent>
 
-      {/* 게시글 상세 다이얼로그 */}
-      <DialogPostDetail
+      {/* 매장 상세 다이얼로그 */}
+      <DialogStoreDetail
         open={detailDialogOpen}
         onOpenChange={setDetailDialogOpen}
-        post={selectedPost}
+        store={selectedStore}
       />
 
-      {/* 게시글 삭제 다이얼로그 */}
-      <DialogPostDelete
+      {/* 매장 삭제 다이얼로그 */}
+      <DialogStoreDelete
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        title={postToDelete?.title}
+        title={storeToDelete?.name}
         onDeleteConfirm={handleDeleteConfirm}
         isDeleting={isDeleting}
       />
 
-      {/* 게시글 추가 다이얼로그 */}
-      <DialogPostAdd
+      {/* 스토어 추가 다이얼로그 */}
+      <DialogStoreAdd
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
-        onSuccess={fetchPosts}
+        onSuccess={fetchStores}
       />
 
-      {/* 게시글 수정 다이얼로그 */}
-      <DialogPostEdit
+      {/* 스토어 수정 다이얼로그 */}
+      <DialogStoreEdit
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
-        post={postToEdit}
-        onEditSuccess={fetchPosts}
+        store={storeToEdit}
+        onEditSuccess={fetchStores}
       />
     </Card>
   )

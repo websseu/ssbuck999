@@ -47,6 +47,15 @@ export default function DialogSignin({
     },
   })
 
+  // 다이얼로그가 닫힐 때 폼 초기화
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      form.reset()
+      setShowPassword(false)
+    }
+    onOpenChange(open)
+  }
+
   const onSubmit = async (data: IUserSignInInput) => {
     try {
       const response = await signInWithCredentials(data)
@@ -67,7 +76,7 @@ export default function DialogSignin({
 
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className='sm:max-w-[450px] pb-6'>
           <DialogHeader className='border-b pb-6'>
             <DialogTitle className='flex items-center font-black text-blue-700 justify-center gap-1 text-xl'>

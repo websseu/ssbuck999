@@ -389,7 +389,10 @@ export default function AdminContact() {
                           const StatusIcon = statusInfo.icon
 
                           return (
-                            <TableRow key={contact._id}>
+                            <TableRow
+                              key={contact._id}
+                              className='text-muted-foreground'
+                            >
                               <TableCell className='text-center'>
                                 {(currentPage - 1) * pageSize + index + 1}
                               </TableCell>

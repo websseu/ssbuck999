@@ -340,17 +340,21 @@ export default function AdminUsers() {
                         <TableHead className='text-center'>번호</TableHead>
                         <TableHead>이름</TableHead>
                         <TableHead>이메일</TableHead>
+                        <TableHead className='text-center'>인증</TableHead>
                         <TableHead className='text-center'>역할</TableHead>
                         <TableHead className='text-center'>상태</TableHead>
                         <TableHead className='text-center'>방문수</TableHead>
-                        <TableHead className='text-center'>관리</TableHead>
                         <TableHead className='text-center'>가입일</TableHead>
+                        <TableHead className='text-center'>관리</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {users.length > 0 ? (
                         users.map((user, index) => (
-                          <TableRow key={user._id}>
+                          <TableRow
+                            key={user._id}
+                            className='text-muted-foreground'
+                          >
                             <TableCell className='text-center'>
                               {(currentPage - 1) * pageSize + index + 1}
                             </TableCell>
@@ -360,16 +364,26 @@ export default function AdminUsers() {
                             <TableCell className='text-muted-foreground'>
                               <div className='flex items-center gap-2'>
                                 <span>{user.email}</span>
-                                {user.emailVerified ? (
-                                  <span title='이메일 인증 완료'>
-                                    <CheckCircle className='h-4 w-4 text-green-500' />
-                                  </span>
-                                ) : (
-                                  <span title='이메일 인증 필요'>
-                                    <XCircle className='h-4 w-4 text-red-500' />
-                                  </span>
-                                )}
                               </div>
+                            </TableCell>
+                            <TableCell>
+                              {user.emailVerified ? (
+                                <span
+                                  title='이메일 인증 완료'
+                                  className='flex items-center justify-center gap-1'
+                                >
+                                  인증 완료
+                                  <CheckCircle className='h-4 w-4 text-green-500' />
+                                </span>
+                              ) : (
+                                <span
+                                  title='이메일 인증 필요'
+                                  className='flex items-center justify-center gap-1'
+                                >
+                                  인증 안됨
+                                  <XCircle className='h-4 w-4 text-red-500' />
+                                </span>
+                              )}
                             </TableCell>
                             <TableCell className='text-center'>
                               <Badge
@@ -433,6 +447,11 @@ export default function AdminUsers() {
                             <TableCell className='text-center text-muted-foreground'>
                               {user.visitCount}
                             </TableCell>
+                            <TableCell className='text-center text-sm'>
+                              <Badge variant='outline'>
+                                {formatDateTime(user.createdAt)}
+                              </Badge>
+                            </TableCell>
                             <TableCell>
                               <div className='flex items-center justify-center gap-1'>
                                 <Button
@@ -452,12 +471,6 @@ export default function AdminUsers() {
                                   <Trash2 className='h-4 w-4' />
                                 </Button>
                               </div>
-                            </TableCell>
-
-                            <TableCell className='text-center text-sm'>
-                              <Badge variant='outline'>
-                                {formatDateTime(user.createdAt)}
-                              </Badge>
                             </TableCell>
                           </TableRow>
                         ))

@@ -6,6 +6,7 @@ import AdminPosts from '@/components/admin/admin-posts'
 import AdminUsers from '@/components/admin/admin-users'
 import AdminContacts from '@/components/admin/admin-contacts'
 import AdminComments from '@/components/admin/admin-comments'
+import AdminStores from '@/components/admin/admin-stores'
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('posts')
@@ -21,6 +22,9 @@ export default function AdminPage() {
           <TabsTrigger className='px-6' value='posts'>
             글 관리
           </TabsTrigger>
+          <TabsTrigger className='px-6' value='stores'>
+            스토어 관리
+          </TabsTrigger>
           <TabsTrigger className='px-6' value='users'>
             회원 관리
           </TabsTrigger>
@@ -34,6 +38,10 @@ export default function AdminPage() {
 
         <TabsContent value='posts'>
           <AdminPosts />
+        </TabsContent>
+
+        <TabsContent value='stores'>
+          <AdminStores />
         </TabsContent>
 
         <TabsContent value='users'>
