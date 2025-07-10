@@ -5,12 +5,12 @@ export interface IStore extends Document {
   name: string
   address: string
   location: string
-  latitude: string
-  longitude: string
   parking: string
   since: string
   phone: string
   tags: string[]
+  services: string[]
+  facilities: string[]
   images: string[]
   createdAt: Date
   updatedAt: Date
@@ -20,14 +20,14 @@ const StoreSchema = new Schema<IStore>(
   {
     storeId: { type: String, required: true, trim: true },
     name: { type: String, required: true, trim: true },
-    address: { type: String, required: true, trim: true },
-    location: { type: String, required: true, trim: true },
-    latitude: { type: String, required: true, trim: true },
-    longitude: { type: String, required: true, trim: true },
-    parking: { type: String, required: true, trim: true },
-    since: { type: String, required: true, trim: true },
-    phone: { type: String, required: true, trim: true },
+    address: { type: String, trim: true },
+    location: { type: String, trim: true },
+    parking: { type: String, trim: true },
+    since: { type: String, trim: true },
+    phone: { type: String, trim: true },
     tags: { type: [String], default: [] },
+    services: { type: [String], default: [] },
+    facilities: { type: [String], default: [] },
     images: { type: [String], default: [] },
   },
   { timestamps: true }

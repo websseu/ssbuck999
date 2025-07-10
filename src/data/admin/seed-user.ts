@@ -1,6 +1,6 @@
 import { cwd } from 'process'
 import { loadEnvConfig } from '@next/env'
-import { userData } from '../data-user'
+import { userData } from './data-user'
 import { connectToDatabase } from '@/lib/db'
 import User from '@/lib/db/models/user.model'
 

@@ -1,8 +1,8 @@
 import { cwd } from 'process'
 import { loadEnvConfig } from '@next/env'
+import { contactData } from './data-contact'
 import { connectToDatabase } from '@/lib/db'
-import { busanPostsData } from '../data-busan-posts'
-import Post from '@/lib/db/models/post.model'
+import Contact from '@/lib/db/models/contact.model'
 
 loadEnvConfig(cwd())
 
@@ -10,11 +10,11 @@ const main = async () => {
   try {
     await connectToDatabase(process.env.MONGODB_URI)
 
-    await Post.deleteMany()
-    const createdPost = await Post.insertMany(busanPostsData)
+    await Contact.deleteMany()
+    const createdContact = await Contact.insertMany(contactData)
 
     console.log({
-      createdPost,
+      createdContact,
       message: '데이터 입력이 완료되었습니다.',
     })
     process.exit(0)
