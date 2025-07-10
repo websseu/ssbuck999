@@ -6,13 +6,13 @@ export default function Footer() {
   return (
     <footer className='bg-green-800 text-white '>
       <div className='footer__container py-8'>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
           {/* 브랜드 정보 */}
           <div className='space-y-3'>
             <div className='flex items-center gap-2'>
               <h3 className='text-xl font-bold'>{APP_NAME}</h3>
             </div>
-            <p className='text-green-50 text-sm leading-relaxed'>
+            <p className='text-green-50 text-sm font-light leading-relaxed'>
               {APP_DESCRIPTION}
             </p>
           </div>

@@ -98,7 +98,7 @@ export default function PostDetail({ post, store }: PostDetailProps) {
       </div>
 
       {/* 게시글 상세 정보 */}
-      <Card className='mt-8'>
+      <Card className='mt-8 pb-0'>
         <CardHeader>
           {/* 제목 */}
           <h1 className='text-xl font-bold text-green-800 leading-tight'>
@@ -285,7 +285,7 @@ export default function PostDetail({ post, store }: PostDetailProps) {
             </div>
           )}
 
-          {/* 댓글 섹션 */}
+          {/* 리뷰 섹션 */}
           <div className='space-y-3 p-6'>
             <h3 className='text-lg font-semibold text-gray-800 flex items-center gap-2'>
               리뷰
@@ -293,12 +293,12 @@ export default function PostDetail({ post, store }: PostDetailProps) {
 
             <Separator />
 
-            {/* 댓글 목록 */}
+            {/* 리뷰 목록 */}
             <div className='text-sm text-muted-foreground pb-4'>
               아직 리뷰가 없습니다. 첫 번째 리뷰를 작성해보세요!
             </div>
 
-            {/* 댓글 작성 */}
+            {/* 리뷰 작성 */}
             <div className='space-y-3'>
               <div className='flex gap-3'>
                 <Avatar className='h-8 w-8'>
@@ -309,7 +309,7 @@ export default function PostDetail({ post, store }: PostDetailProps) {
                 </Avatar>
                 <div className='flex-1 space-y-2'>
                   <Textarea
-                    placeholder='댓글을 작성해주세요...'
+                    placeholder='리뷰을 작성해주세요...'
                     className='min-h-[80px] resize-none'
                   />
                   <div className='flex justify-end'>
@@ -318,7 +318,7 @@ export default function PostDetail({ post, store }: PostDetailProps) {
                       className='bg-green-700 hover:bg-green-600'
                     >
                       <Send className='h-4 w-4 mr-1' />
-                      댓글 작성
+                      리뷰 작성
                     </Button>
                   </div>
                 </div>

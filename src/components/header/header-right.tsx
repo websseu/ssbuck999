@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { APP_COPYRIGHT, APP_NAME } from '@/lib/constants'
 import { Button } from '../ui/button'
+import { ScrollArea } from '../ui/scroll-area'
 import {
   Coffee,
   Salad,
@@ -174,103 +175,106 @@ export default function HeaderRight({ session }: HeaderRightProps) {
             </div>
           </div>
 
-          {/* 메인 메뉴 */}
-          <div className='py-2'>
-            <nav className='space-y-1'>
-              {menuItems.map((item) => {
-                const Icon = item.icon
-                return (
-                  <button
-                    key={item.href}
-                    onClick={() => handleMenuClick(item.href, item.type)}
-                    className='w-full flex items-center justify-between px-4 py-3 text-left hover:bg-green-50 transition-colors group cursor-pointer'
-                  >
-                    <div className='flex items-center gap-3'>
-                      <Icon className='w-4 h-4 text-gray-600 group-hover:text-green-600' />
-                      <span className='font-nanum text-sm text-gray-900 group-hover:text-green-600'>
-                        {item.label}
-                      </span>
-                    </div>
-                    <ChevronRight className='w-4 h-4 text-gray-400 group-hover:text-green-600' />
-                  </button>
-                )
-              })}
-            </nav>
-          </div>
+          {/* 스크롤 가능한 메뉴 영역 */}
+          <ScrollArea className='flex-1 h-[calc(100vh-200px)]'>
+            {/* 메인 메뉴 */}
+            <div className='py-2'>
+              <nav className='space-y-1'>
+                {menuItems.map((item) => {
+                  const Icon = item.icon
+                  return (
+                    <button
+                      key={item.href}
+                      onClick={() => handleMenuClick(item.href, item.type)}
+                      className='w-full flex items-center justify-between px-4 py-3 text-left hover:bg-green-50 transition-colors group cursor-pointer'
+                    >
+                      <div className='flex items-center gap-3'>
+                        <Icon className='w-4 h-4 text-gray-600 group-hover:text-green-600' />
+                        <span className='font-nanum text-sm text-gray-900 group-hover:text-green-600'>
+                          {item.label}
+                        </span>
+                      </div>
+                      <ChevronRight className='w-4 h-4 text-gray-400 group-hover:text-green-600' />
+                    </button>
+                  )
+                })}
+              </nav>
+            </div>
 
-          {/* 인증 메뉴 */}
-          <div className='py-2 border-t border-b'>
-            <nav className='space-y-1'>
-              {currentAuthItems.map((item) => {
-                const Icon = item.icon
-                return (
-                  <button
-                    key={item.href}
-                    onClick={() => handleMenuClick(item.href, item.type)}
-                    className='w-full flex items-center justify-between px-4 py-3 text-left hover:bg-green-50 transition-colors group cursor-pointer'
-                  >
-                    <div className='flex items-center gap-3'>
-                      <Icon className='w-4 h-4 text-gray-600 group-hover:text-green-600' />
-                      <span className='font-nanum text-sm text-gray-900 group-hover:text-green-600'>
-                        {item.label}
-                      </span>
-                    </div>
-                    <ChevronRight className='w-4 h-4 text-gray-400 group-hover:text-green-600' />
-                  </button>
-                )
-              })}
-            </nav>
-          </div>
+            {/* 인증 메뉴 */}
+            <div className='py-2 border-t border-b'>
+              <nav className='space-y-1'>
+                {currentAuthItems.map((item) => {
+                  const Icon = item.icon
+                  return (
+                    <button
+                      key={item.href}
+                      onClick={() => handleMenuClick(item.href, item.type)}
+                      className='w-full flex items-center justify-between px-4 py-3 text-left hover:bg-green-50 transition-colors group cursor-pointer'
+                    >
+                      <div className='flex items-center gap-3'>
+                        <Icon className='w-4 h-4 text-gray-600 group-hover:text-green-600' />
+                        <span className='font-nanum text-sm text-gray-900 group-hover:text-green-600'>
+                          {item.label}
+                        </span>
+                      </div>
+                      <ChevronRight className='w-4 h-4 text-gray-400 group-hover:text-green-600' />
+                    </button>
+                  )
+                })}
+              </nav>
+            </div>
 
-          {/* 찾기 */}
-          <div className='py-2 border-b'>
-            <nav className='space-y-1'>
-              <button
-                onClick={() => handleMenuClick('#find-email', 'dialog')}
-                className='w-full flex items-center justify-between px-4 py-3 text-left hover:bg-green-50 transition-colors group cursor-pointer'
-              >
-                <div className='flex items-center gap-3'>
-                  <Mail className='w-4 h-4 text-gray-600 group-hover:text-green-600' />
-                  <span className='font-nanum text-sm text-gray-900 group-hover:text-green-600'>
-                    이메일 찾기
-                  </span>
-                </div>
-                <ChevronRight className='w-4 h-4 text-gray-400 group-hover:text-green-600' />
-              </button>
-              <button
-                onClick={() => handleMenuClick('#find-password', 'dialog')}
-                className='w-full flex items-center justify-between px-4 py-3 text-left hover:bg-green-50 transition-colors group cursor-pointer'
-              >
-                <div className='flex items-center gap-3'>
-                  <Lock className='w-4 h-4 text-gray-600 group-hover:text-green-600' />
-                  <span className='font-nanum text-sm text-gray-900 group-hover:text-green-600'>
-                    비밀번호 찾기
-                  </span>
-                </div>
-                <ChevronRight className='w-4 h-4 text-gray-400 group-hover:text-green-600' />
-              </button>
-            </nav>
-          </div>
-
-          {/* 관리자 메뉴 (관리자만 표시) */}
-          {showAdminItems && (
-            <div className='border-b py-2'>
+            {/* 찾기 */}
+            <div className='py-2 border-b'>
               <nav className='space-y-1'>
                 <button
-                  onClick={() => handleMenuClick('/admin', 'page')}
-                  className='w-full flex items-center justify-between px-4 py-3 text-left hover:bg-blue-50 transition-colors group cursor-pointer'
+                  onClick={() => handleMenuClick('#find-email', 'dialog')}
+                  className='w-full flex items-center justify-between px-4 py-3 text-left hover:bg-green-50 transition-colors group cursor-pointer'
                 >
                   <div className='flex items-center gap-3'>
-                    <Beer className='w-4 h-4 text-gray-600 group-hover:text-blue-600' />
-                    <span className='font-nanum text-sm text-gray-900 group-hover:text-blue-600'>
-                      관리자 페이지
+                    <Mail className='w-4 h-4 text-gray-600 group-hover:text-green-600' />
+                    <span className='font-nanum text-sm text-gray-900 group-hover:text-green-600'>
+                      이메일 찾기
                     </span>
                   </div>
-                  <ChevronRight className='w-4 h-4 text-gray-400 group-hover:text-blue-600' />
+                  <ChevronRight className='w-4 h-4 text-gray-400 group-hover:text-green-600' />
+                </button>
+                <button
+                  onClick={() => handleMenuClick('#find-password', 'dialog')}
+                  className='w-full flex items-center justify-between px-4 py-3 text-left hover:bg-green-50 transition-colors group cursor-pointer'
+                >
+                  <div className='flex items-center gap-3'>
+                    <Lock className='w-4 h-4 text-gray-600 group-hover:text-green-600' />
+                    <span className='font-nanum text-sm text-gray-900 group-hover:text-green-600'>
+                      비밀번호 찾기
+                    </span>
+                  </div>
+                  <ChevronRight className='w-4 h-4 text-gray-400 group-hover:text-green-600' />
                 </button>
               </nav>
             </div>
-          )}
+
+            {/* 관리자 메뉴 (관리자만 표시) */}
+            {showAdminItems && (
+              <div className='border-b py-2'>
+                <nav className='space-y-1'>
+                  <button
+                    onClick={() => handleMenuClick('/admin', 'page')}
+                    className='w-full flex items-center justify-between px-4 py-3 text-left hover:bg-blue-50 transition-colors group cursor-pointer'
+                  >
+                    <div className='flex items-center gap-3'>
+                      <Beer className='w-4 h-4 text-gray-600 group-hover:text-blue-600' />
+                      <span className='font-nanum text-sm text-gray-900 group-hover:text-blue-600'>
+                        관리자 페이지
+                      </span>
+                    </div>
+                    <ChevronRight className='w-4 h-4 text-gray-400 group-hover:text-blue-600' />
+                  </button>
+                </nav>
+              </div>
+            )}
+          </ScrollArea>
 
           {/* 앱 정보 */}
           <div className='absolute bottom-0 left-0 right-0'>

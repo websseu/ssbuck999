@@ -9,8 +9,8 @@
     "lint": "next lint",
     "seed-contact": "npx tsx src/data/admin/seed-contact.ts",
     "seed-user": "npx tsx src/data/admin/seed-user.ts",
-    "seed-busan-posts": "npx tsx src/data/starbucks/seed-busan-posts.ts",
-    "seed-busan-stores": "npx tsx src/data/starbucks/seed-busan-stores.ts"
+    "seed-posts": "npx tsx src/data/starbucks/seed-posts.ts",
+    "seed-stores": "npx tsx src/data/starbucks/seed-stores.ts"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.10.0",

@@ -19,19 +19,19 @@ export default function AdminPage() {
 
       <Tabs defaultValue='posts' value={activeTab} onValueChange={setActiveTab}>
         <TabsList className='mx-auto mb-2'>
-          <TabsTrigger className='px-6' value='posts'>
+          <TabsTrigger className='md:px-6 text-xs md:text-sm' value='posts'>
             글 관리
           </TabsTrigger>
-          <TabsTrigger className='px-6' value='stores'>
+          <TabsTrigger className='md:px-6 text-xs md:text-sm' value='stores'>
             스토어 관리
           </TabsTrigger>
-          <TabsTrigger className='px-6' value='users'>
+          <TabsTrigger className='md:px-6 text-xs md:text-sm' value='users'>
             회원 관리
           </TabsTrigger>
-          <TabsTrigger className='px-6' value='contacts'>
+          <TabsTrigger className='md:px-6 text-xs md:text-sm' value='contacts'>
             문의 관리
           </TabsTrigger>
-          <TabsTrigger className='px-6' value='comments'>
+          <TabsTrigger className='md:px-6 text-xs md:text-sm' value='comments'>
             댓글 관리
           </TabsTrigger>
         </TabsList>

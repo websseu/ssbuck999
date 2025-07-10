@@ -79,7 +79,7 @@ export default function PostList() {
 
   if (isLoading) {
     return (
-      <div className='flex justify-center items-center py-12 text-muted-foreground'>
+      <div className='flex justify-center items-center py-12 text-muted-foreground min-h-screen'>
         <span className='animate-spin mr-2'>⏳</span> 게시글을 불러오는 중...
       </div>
     )
@@ -102,7 +102,7 @@ export default function PostList() {
   }
 
   return (
-    <div>
+    <div className='min-h-1/6'>
       {/* 페이지 크기 설정 */}
       <div className='flex justify-end mb-6'>
         <Select

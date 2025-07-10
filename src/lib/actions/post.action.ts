@@ -12,6 +12,7 @@ import { IPostInput, IPostUpdateInput } from '../type'
 // 4. deletePost : 게시글 삭제하기
 // 5. updatePost : 게시글 수정하기
 // 6. incrementViews : 조회수 증가
+// 7. getPostBySlug : 슬러그로 게시글 가져오기(스토어 정보 포함)
 
 // 게시글 생성하기
 export async function createPost(data: IPostInput) {
@@ -243,7 +244,49 @@ export async function updatePost(data: IPostUpdateInput) {
   }
 }
 
-// 슬러그로 게시글 가져오기 (스토어 정보 포함)
+// 조회수 증가
+export async function incrementViews(slug: string) {
+  try {
+    // 데이터베이스 연결
+    await connectToDatabase()
+
+    // 슬러그 유효성 검사
+    if (!slug) {
+      return {
+        success: false,
+        error: '슬러그가 필요합니다.',
+      }
+    }
+
+    // 조회수 증가
+    const updatedPost = await Post.findOneAndUpdate(
+      { slug, isPublished: true },
+      { $inc: { numViews: 1 } },
+      { new: true }
+    )
+
+    if (!updatedPost) {
+      return {
+        success: false,
+        error: '포스트를 찾을 수 없습니다.',
+      }
+    }
+
+    return {
+      success: true,
+      views: updatedPost.numViews,
+    }
+  } catch (error) {
+    console.error('조회수 증가 중 오류 발생:', error)
+
+    return {
+      success: false,
+      error: '조회수 증가 중 오류가 발생했습니다.',
+    }
+  }
+}
+
+// 슬러그로 게시글 가져오기(스토어 정보 포함)
 export async function getPostBySlug(slug: string) {
   try {
     // 데이터베이스 연결
@@ -312,48 +355,6 @@ export async function getPostBySlug(slug: string) {
     return {
       success: false,
       error: '게시글을 불러오는 중 오류가 발생했습니다.',
-    }
-  }
-}
-
-// 조회수 증가
-export async function incrementViews(slug: string) {
-  try {
-    // 데이터베이스 연결
-    await connectToDatabase()
-
-    // 슬러그 유효성 검사
-    if (!slug) {
-      return {
-        success: false,
-        error: '슬러그가 필요합니다.',
-      }
-    }
-
-    // 조회수 증가
-    const updatedPost = await Post.findOneAndUpdate(
-      { slug, isPublished: true },
-      { $inc: { numViews: 1 } },
-      { new: true }
-    )
-
-    if (!updatedPost) {
-      return {
-        success: false,
-        error: '포스트를 찾을 수 없습니다.',
-      }
-    }
-
-    return {
-      success: true,
-      views: updatedPost.numViews,
-    }
-  } catch (error) {
-    console.error('조회수 증가 중 오류 발생:', error)
-
-    return {
-      success: false,
-      error: '조회수 증가 중 오류가 발생했습니다.',
     }
   }
 }
