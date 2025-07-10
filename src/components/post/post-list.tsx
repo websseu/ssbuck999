@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { getAllPostsPage } from '@/lib/actions/post.action'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
@@ -11,15 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Eye,
-  Heart,
-  ChevronsLeft,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsRight,
-} from 'lucide-react'
+import { Eye, Heart } from 'lucide-react'
 import Link from 'next/link'
+import PostPage from './post-page'
 
 interface Post {
   _id: string
@@ -84,34 +77,6 @@ export default function PostList() {
     setCurrentPage(page)
   }
 
-  // 페이지네이션 버튼 생성
-  const renderPaginationButtons = () => {
-    if (!pagination) return null
-
-    const buttons = []
-    const { currentPage, totalPages } = pagination
-
-    // 이전 페이지들
-    const startPage = Math.max(1, currentPage - 2)
-    const endPage = Math.min(totalPages, currentPage + 2)
-
-    for (let i = startPage; i <= endPage; i++) {
-      buttons.push(
-        <Button
-          key={i}
-          variant={i === currentPage ? 'default' : 'outline'}
-          size='sm'
-          onClick={() => goToPage(i)}
-          className='w-8 h-8 p-0'
-        >
-          {i}
-        </Button>
-      )
-    }
-
-    return buttons
-  }
-
   if (isLoading) {
     return (
       <div className='flex justify-center items-center py-12 text-muted-foreground'>
@@ -163,7 +128,7 @@ export default function PostList() {
             className='hover:shadow-lg transition-shadow py-0'
           >
             <CardContent className='p-5 flex flex-col gap-2'>
-              <Link href={`/posts/${post.slug}`} className='group'>
+              <Link href={`/starbucks/${post.slug}`} className='group'>
                 <h2 className='text-lg font-bold text-green-800 group-hover:underline underline-offset-4 line-clamp-2'>
                   {post.title}
                 </h2>
@@ -187,54 +152,8 @@ export default function PostList() {
       </div>
 
       {/* 페이지네이션 */}
-      {pagination && pagination.totalPages > 1 && (
-        <div className='flex justify-center items-center gap-2'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-2'>
-              <Button
-                variant='outline'
-                size='sm'
-                onClick={() => goToPage(1)}
-                disabled={!pagination.hasPrevPage}
-                className='w-8 h-8 p-0'
-              >
-                <ChevronsLeft className='h-4 w-4' />
-              </Button>
-
-              <Button
-                variant='outline'
-                size='sm'
-                onClick={() => goToPage(currentPage - 1)}
-                disabled={!pagination.hasPrevPage}
-                className='w-8 h-8 p-0'
-              >
-                <ChevronLeft className='h-4 w-4' />
-              </Button>
-
-              <div className='flex gap-1'>{renderPaginationButtons()}</div>
-
-              <Button
-                variant='outline'
-                size='sm'
-                onClick={() => goToPage(currentPage + 1)}
-                disabled={!pagination.hasNextPage}
-                className='w-8 h-8 p-0'
-              >
-                <ChevronRight className='h-4 w-4' />
-              </Button>
-
-              <Button
-                variant='outline'
-                size='sm'
-                onClick={() => goToPage(pagination.totalPages)}
-                disabled={!pagination.hasNextPage}
-                className='w-8 h-8 p-0'
-              >
-                <ChevronsRight className='h-4 w-4' />
-              </Button>
-            </div>
-          </div>
-        </div>
+      {pagination && (
+        <PostPage pagination={pagination} onPageChange={goToPage} />
       )}
     </div>
   )

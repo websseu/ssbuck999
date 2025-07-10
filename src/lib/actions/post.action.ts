@@ -96,7 +96,6 @@ export async function getAllPostsPage(
             { title: { $regex: searchQuery, $options: 'i' } },
             { category: { $regex: searchQuery, $options: 'i' } },
             { storeId: { $regex: searchQuery, $options: 'i' } },
-            { tags: { $regex: searchQuery, $options: 'i' } },
           ],
         }
       : {}
@@ -244,6 +243,79 @@ export async function updatePost(data: IPostUpdateInput) {
   }
 }
 
+// 슬러그로 게시글 가져오기 (스토어 정보 포함)
+export async function getPostBySlug(slug: string) {
+  try {
+    // 데이터베이스 연결
+    await connectToDatabase()
+
+    // 슬러그 유효성 검사
+    if (!slug) {
+      return {
+        success: false,
+        error: '슬러그가 필요합니다.',
+      }
+    }
+
+    // 게시된 게시글만 조회
+    const post = (await Post.findOne({ slug, isPublished: true }).lean()) as {
+      _id: string
+      title: string
+      slug: string
+      category?: string
+      description?: string
+      isPublished: boolean
+      storeId?: string
+      numViews: number
+      numLikes: number
+      createdAt: string
+      updatedAt: string
+    } | null
+
+    if (!post) {
+      return {
+        success: false,
+        error: '게시글을 찾을 수 없습니다.',
+      }
+    }
+
+    // 스토어 정보도 함께 조회
+    let store = null
+    if (post.storeId) {
+      const Store = (await import('../db/models/store.model')).default
+      store = (await Store.findOne({ storeId: post.storeId }).lean()) as {
+        _id: string
+        storeId: string
+        name: string
+        address: string
+        location: string
+        parking: string
+        since: string
+        phone: string
+        tags: string[]
+        services: string[]
+        facilities: string[]
+        images: string[]
+        createdAt: string
+        updatedAt: string
+      } | null
+    }
+
+    return {
+      success: true,
+      post: JSON.parse(JSON.stringify(post)),
+      store: store ? JSON.parse(JSON.stringify(store)) : null,
+    }
+  } catch (error) {
+    console.error('게시글 조회 중 오류 발생:', error)
+
+    return {
+      success: false,
+      error: '게시글을 불러오는 중 오류가 발생했습니다.',
+    }
+  }
+}
+
 // 조회수 증가
 export async function incrementViews(slug: string) {
   try {
@@ -261,7 +333,7 @@ export async function incrementViews(slug: string) {
     // 조회수 증가
     const updatedPost = await Post.findOneAndUpdate(
       { slug, isPublished: true },
-      { $inc: { numviews: 1 } },
+      { $inc: { numViews: 1 } },
       { new: true }
     )
 
@@ -274,7 +346,7 @@ export async function incrementViews(slug: string) {
 
     return {
       success: true,
-      views: updatedPost.numviews,
+      views: updatedPost.numViews,
     }
   } catch (error) {
     console.error('조회수 증가 중 오류 발생:', error)

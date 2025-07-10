@@ -6,6 +6,7 @@ export interface IStore extends Document {
   address: string
   location: string
   parking: string
+  directions: string
   since: string
   phone: string
   tags: string[]
@@ -23,6 +24,7 @@ const StoreSchema = new Schema<IStore>(
     address: { type: String, trim: true },
     location: { type: String, trim: true },
     parking: { type: String, trim: true },
+    directions: { type: String, trim: true },
     since: { type: String, trim: true },
     phone: { type: String, trim: true },
     tags: { type: [String], default: [] },
