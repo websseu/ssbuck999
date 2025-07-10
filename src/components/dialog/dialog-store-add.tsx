@@ -72,7 +72,7 @@ export default function DialogStoreAdd({
   // form과 동기화 (폼 제출 전 항상 최신값 반영)
   useEffect(() => {
     form.setValue('images', imageInputs.filter(Boolean))
-  }, [imageInputs])
+  }, [imageInputs, form])
 
   // 이미지 input 추가
   const handleAddImageInput = () => {

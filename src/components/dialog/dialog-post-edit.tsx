@@ -71,7 +71,7 @@ export default function DialogPostEdit({
     if (post) {
       form.reset(post)
     }
-  }, [post])
+  }, [post, form])
 
   const onSubmit = async (data: IPostInput) => {
     if (!post?._id) return
