@@ -131,12 +131,14 @@ export const StoreInputSchema = z.object({
     .string()
     .min(1, { message: '→ 지역을 입력해주세요.' })
     .max(50, { message: '→ 지역은 최대 50자까지 가능합니다.' }),
-  latitude: z.string().min(1, { message: '→ 위도를 입력해주세요.' }),
-  longitude: z.string().min(1, { message: '→ 경도를 입력해주세요.' }),
   parking: z
     .string()
     .min(1, { message: '→ 주차 정보를 입력해주세요.' })
     .max(300, { message: '→ 주차 정보는 최대 300자까지 가능합니다.' }),
+  directions: z
+    .string()
+    .min(1, { message: '→ 오시는길 정보를 입력해주세요.' })
+    .max(300, { message: '→ 오시는길 정보는 최대 300자까지 가능합니다.' }),
   since: z
     .string()
     .min(1, { message: '→ 오픈일을 입력해주세요.' })
@@ -152,4 +154,24 @@ export const StoreInputSchema = z.object({
 // 스토어 업데이트용
 export const StoreUpdateSchema = StoreInputSchema.partial().extend({
   id: z.string().min(1, { message: '→ 스토어 ID가 필요합니다.' }),
+})
+
+// 리뷰 생성
+export const ReviewInputSchema = z.object({
+  postId: z.string().min(1, { message: '→ 게시글 ID를 입력해주세요.' }),
+  userId: z.string().min(1, { message: '→ 사용자 ID를 입력해주세요.' }),
+  content: z
+    .string()
+    .min(1, { message: '→ 리뷰 내용을 입력해주세요.' })
+    .max(1000, { message: '→ 리뷰 내용은 최대 1000자까지 가능합니다.' }),
+  rating: z
+    .number()
+    .min(1, { message: '→ 평점을 선택해주세요.' })
+    .max(5, { message: '→ 평점은 1~5점 사이여야 합니다.' }),
+  parentId: z.string().optional(),
+})
+
+// 리뷰 수정
+export const ReviewUpdateSchema = ReviewInputSchema.partial().extend({
+  id: z.string().min(1, { message: '→ 리뷰 ID가 필요합니다.' }),
 })

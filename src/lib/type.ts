@@ -5,6 +5,8 @@ import {
   PasswordResetSchema,
   PostInputSchema,
   PostUpdateSchema,
+  ReviewInputSchema,
+  ReviewUpdateSchema,
   StoreInputSchema,
   StoreUpdateSchema,
   TermsAgreementSchema,
@@ -39,3 +41,9 @@ export type IStoreInput = z.infer<typeof StoreInputSchema>
 
 // 스토어 수정하기
 export type IStoreUpdateInput = z.infer<typeof StoreUpdateSchema>
+
+// 리뷰 생성
+export type IReviewInput = z.infer<typeof ReviewInputSchema>
+
+// 리뷰 수정하기
+export type IReviewUpdateInput = z.infer<typeof ReviewUpdateSchema>

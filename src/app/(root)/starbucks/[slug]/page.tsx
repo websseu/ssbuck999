@@ -26,31 +26,15 @@ export async function generateMetadata(
   const post = result.post
 
   return {
-    title: `${post.title} | SSBUCK999`,
+    title: `${post.title} | 스타벅스`,
     description: post.description || '스타벅스 매장 정보와 리뷰를 확인하세요.',
-    keywords: ['스타벅스', '매장', '카페', '리뷰', 'SSBUCK999', post.category],
-    openGraph: {
-      title: `${post.title} | SSBUCK999`,
-      description:
-        post.description || '스타벅스 매장 정보와 리뷰를 확인하세요.',
-      type: 'article',
-      url: `https://ssbuck999.com/starbucks/${post.slug}`,
-      images: [
-        {
-          url: '/webstoryboy.png',
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${post.title} | SSBUCK999`,
-      description:
-        post.description || '스타벅스 매장 정보와 리뷰를 확인하세요.',
-      images: ['/webstoryboy.png'],
-    },
+    keywords: [
+      '스타벅스',
+      '스타벅스 후기',
+      '스타벅스 리뷰',
+      'SSBUCK999',
+      `${post.title} 스타벅스`,
+    ],
   }
 }
 
